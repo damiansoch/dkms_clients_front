@@ -19,9 +19,9 @@ const AllUsersTable = ({ customers }) => {
       <tbody>
         {customers.map((customer) => (
           <tr key={customer.id} onClick={(e) => clickHandler(customer.id)}>
-            <td>{customer.firstName}</td>
-            <td>{customer.lastName}</td>
-            <td>{customer.companyName}</td>
+            <td style={{ cursor: 'pointer' }}>{customer.firstName}</td>
+            <td style={{ cursor: 'pointer' }}>{customer.lastName}</td>
+            <td style={{ cursor: 'pointer' }}>{customer.companyName}</td>
           </tr>
         ))}
       </tbody>
