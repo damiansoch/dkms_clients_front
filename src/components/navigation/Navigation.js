@@ -14,15 +14,18 @@ const Navigation = () => {
       <Navbar.Brand href='#home'>DKMS_WD Management</Navbar.Brand>
       <Navbar.Toggle aria-controls='basic-navbar-nav' />
       <Navbar.Collapse id='basic-navbar-nav'>
-        <Nav className='ms-auto'>
-          <Nav.Link>
-            <Link to='/'>Customers</Link>
-          </Nav.Link>
-          <Nav.Link>
-            <Link to='/'>Jobs</Link>
-          </Nav.Link>
-
-          <NavDropdown title='Dropdown' id='basic-nav-dropdown'>
+        <Nav className='ms-auto d-flex align-items-center justify-content-center'>
+          <Link className='mx-3' to='/'>
+            Customers
+          </Link>
+          <Link className='mx-3' to='/'>
+            Jobs
+          </Link>
+          <NavDropdown
+            className='mx-3'
+            title='Dropdown'
+            id='basic-nav-dropdown'
+          >
             <NavDropdown.Item href='#action/3.1'>Action</NavDropdown.Item>
             <NavDropdown.Item href='#action/3.2'>
               Another action

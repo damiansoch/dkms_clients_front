@@ -1,7 +1,16 @@
+a {
+  text-decoration: none !important;
+  color: white !important;
+  transition: 0.3s all ease-in-out;
+}
+a:hover {
+  color: rgb(148, 146, 146) !important;
+}
+
 .table_header {
   background-color: rgb(255, 127, 127) !important;
 }
 .table_key {
-  width: 200px !important;
+  width: 110px !important;
   background-color: aqua !important;
 }
