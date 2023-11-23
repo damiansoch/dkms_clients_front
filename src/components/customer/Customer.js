@@ -43,7 +43,9 @@ const Customer = () => {
           {selectedCustomer.contacts !== null &&
           selectedCustomer.contacts !== undefined &&
           selectedCustomer.contacts.length > 0 ? (
-            selectedCustomer.contacts.map((data) => <DataTable data={data} />)
+            selectedCustomer.contacts.map((data, index) => (
+              <DataTable key={index} data={data} />
+            ))
           ) : (
             <NoData variant='danger' data='No data to display' />
           )}
@@ -52,7 +54,9 @@ const Customer = () => {
           {selectedCustomer.addresses !== null &&
           selectedCustomer.addresses !== undefined &&
           selectedCustomer.addresses.length > 0 ? (
-            selectedCustomer.addresses.map((data) => <DataTable data={data} />)
+            selectedCustomer.addresses.map((data, index) => (
+              <DataTable key={index} data={data} />
+            ))
           ) : (
             <NoData variant='danger' data='No data to display' />
           )}
@@ -61,7 +65,9 @@ const Customer = () => {
           {selectedCustomer.jobs !== null &&
           selectedCustomer.jobs !== undefined &&
           selectedCustomer.jobs.length > 0 ? (
-            selectedCustomer.jobs.map((data) => <DataTable data={data} />)
+            selectedCustomer.jobs.map((data, index) => (
+              <DataTable key={index} data={data} />
+            ))
           ) : (
             <NoData variant='danger' data='No data to display' />
           )}
