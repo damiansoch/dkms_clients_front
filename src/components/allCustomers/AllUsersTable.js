@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Row, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaSortAlphaDown } from 'react-icons/fa';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
@@ -57,6 +57,7 @@ const AllUsersTable = ({ customers }) => {
   //filtering
   useEffect(() => {
     if (searchBy !== '') {
+      setCurrentPage(1);
       let filtered = searchByFunction(customers, searchBy, searchText);
       setSortedCustomers(filtered);
     }
@@ -83,6 +84,13 @@ const AllUsersTable = ({ customers }) => {
       }, 2000);
     }
   }, [resultMessage]);
+
+  //clear search
+  const clearSearch = () => {
+    setSearchBy('');
+    setSearchText('');
+    setSortedCustomers(customers);
+  };
   return (
     <>
       <SearchComponent
@@ -91,6 +99,7 @@ const AllUsersTable = ({ customers }) => {
         selection={['firstName', 'lastName', 'companyName']}
         searchBy={searchBy}
         setSearchBy={setSearchBy}
+        clearSearchFunction={clearSearch}
       />
 
       <Table striped bordered hover variant='info' className='mt-3'>
@@ -149,13 +158,18 @@ const AllUsersTable = ({ customers }) => {
           ))}
         </tbody>
       </Table>
-      <div className=' d-flex align-items-center justify-content-center'>
-        <PaginationComponent
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
-      </div>
+      <Row>
+        <div className=' col-10 d-flex align-items-center justify-content-center'>
+          <PaginationComponent
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+        <div className='col-2'>
+          <Button>New Customer</Button>
+        </div>
+      </Row>
       {resultMessage !== '' && (
         <NoData variant={'success'} data={resultMessage} />
       )}

@@ -8,7 +8,6 @@ export const sortByKey = (data, key, sortOrder) => {
 };
 
 export const searchByFunction = (arr, key, searchText) => {
-  console.log(arr);
   let filtered = [];
   if (Array.isArray(arr)) {
     filtered = arr.filter(

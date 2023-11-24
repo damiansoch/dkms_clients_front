@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Row, Col, Form, Dropdown } from 'react-bootstrap';
 import { convertToLabel } from '../../genericFunctions/converters';
 
@@ -8,6 +7,7 @@ const SearchComponent = ({
   searchText,
   setSearchBy,
   searchBy,
+  clearSearchFunction,
 }) => {
   return (
     <Form className=' my-3'>
@@ -46,7 +46,9 @@ const SearchComponent = ({
           <p
             style={{ cursor: 'pointer' }}
             className=' text-decoration-underline text-danger'
-            onClick={() => setSearchBy('')}
+            onClick={() => {
+              clearSearchFunction();
+            }}
           >
             Clear search
           </p>
