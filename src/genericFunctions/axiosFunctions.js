@@ -8,3 +8,12 @@ export const updateAxiosFunction = async (endpoint, editedData) => {
     console.error('Error updating user:', error);
   }
 };
+
+export const deleteAxiosFunction = async (endpoint) => {
+  try {
+    const response = await axios.delete(endpoint);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+};

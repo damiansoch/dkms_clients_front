@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { updateAxiosFunction } from '../../genericFunctions/axiosFunctions';
+import {
+  deleteAxiosFunction,
+  updateAxiosFunction,
+} from '../../genericFunctions/axiosFunctions';
 import { getCustomers } from '../../store/customersSlice';
 import { useDispatch } from 'react-redux';
 import NoData from '../generic/NoData';
@@ -23,6 +26,17 @@ const TableRowData = ({ customer, clickHandler, setResultMessage }) => {
     }
     setEditMode(!editMode);
     setEditedData(customer);
+  };
+
+  const deleteHandler = async (id) => {
+    var confirm = window.confirm('Are you sure?');
+    if (confirm) {
+      var endpoint = `https://localhost:7280/api/Customer/remove/${id}`;
+      var result = await deleteAxiosFunction(endpoint);
+      console.log(result);
+      setResultMessage(result);
+      dispatch(getCustomers());
+    }
   };
   return (
     <tr>
@@ -83,7 +97,13 @@ const TableRowData = ({ customer, clickHandler, setResultMessage }) => {
             {!editMode ? 'Edit' : 'Save'}
           </Button>
           {!editMode && (
-            <Button className=' btn-sm' variant='danger'>
+            <Button
+              onClick={() => {
+                deleteHandler(customer.id);
+              }}
+              className=' btn-sm'
+              variant='danger'
+            >
               Delete
             </Button>
           )}
