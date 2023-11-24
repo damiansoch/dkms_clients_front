@@ -8,6 +8,7 @@ import PaginationComponent from '../generic/PaginationComponent';
 import SearchComponent from '../generic/SearchComponent';
 import TableRowData from './TableRowData';
 import NoData from '../generic/NoData';
+import ModalGen from '../generic/ModalGen';
 
 const ItemsPerPage = 10;
 
@@ -18,15 +19,19 @@ const AllUsersTable = ({ customers }) => {
   const [searchText, setSearchText] = useState('');
   const [searchBy, setSearchBy] = useState('');
   const [resultMessage, setResultMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
   const clickHandler = (id) => {
     navigate(`/customer/${id}`);
   };
 
+  const handleShowModal = () => setShowModal(true);
+
   useEffect(() => {
     setSortedCustomers(customers);
   }, [customers]);
+  //adding customer
 
   //sorting
   const sortingHandler = (selection) => {
@@ -167,12 +172,13 @@ const AllUsersTable = ({ customers }) => {
           />
         </div>
         <div className='col-2'>
-          <Button>New Customer</Button>
+          <Button onClick={handleShowModal}>New Customer</Button>
         </div>
       </Row>
       {resultMessage !== '' && (
         <NoData variant={'success'} data={resultMessage} />
       )}
+      <ModalGen show={showModal} setShow={setShowModal} data='customer' />
     </>
   );
 };
