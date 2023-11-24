@@ -9,8 +9,15 @@ a:hover {
 
 .table_header {
   background-color: rgb(255, 127, 127) !important;
+  cursor: alias;
+  text-align: center;
 }
 .table_key {
   width: 110px !important;
   background-color: aqua !important;
+}
+.pagination {
+  --bs-pagination-bg: #85b6ff !important;
+  color: #888 !important; /* Set the desired color for inactive items */
+  cursor: not-allowed !important;
 }
