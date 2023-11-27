@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
@@ -10,13 +10,19 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import DataTable from '../generic/DataTable';
 import NoData from '../generic/NoData';
+import ModalGen from '../generic/ModalGen';
+import { Button } from 'react-bootstrap';
 
 const Customer = () => {
+  const [showModal, setShowModal] = useState(false);
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const { selectedCustomer, isLoading, isError, errorMessage } = useSelector(
     (state) => state.selectedCustomer
   );
+
+  const handleShowModal = () => setShowModal(true);
 
   useEffect(() => {
     dispatch(getCustomerDetails({ id }));
@@ -71,6 +77,15 @@ const Customer = () => {
           ) : (
             <NoData variant='danger' data='No data to display' />
           )}
+          <div className='col-12 d-flex justify-content-end mb-3'>
+            <Button onClick={handleShowModal}>Add job</Button>
+          </div>
+          <ModalGen
+            show={showModal}
+            setShow={setShowModal}
+            data='job'
+            customerId={selectedCustomer.id}
+          />
         </Tab>
       </Tabs>
     </div>

@@ -18,3 +18,8 @@ export const searchByFunction = (arr, key, searchText) => {
   }
   return filtered;
 };
+export const checkIfDate = (data) => {
+  const isDateTimeString =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,2})?$/.test(data);
+  return isDateTimeString;
+};

@@ -8,20 +8,23 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getCustomers } from '../../store/customersSlice';
 
-const ModalGen = ({ show, setShow, data }) => {
+const ModalGen = ({ show, setShow, data, customerId = 0 }) => {
   const [initialObject, setInitialObject] = useState({});
   const [columns, setColumns] = useState([]);
   const [errorsO, setErrorsO] = useState([]);
+  const [endpoint, setEndpoint] = useState('');
+  const [action, setAction] = useState('');
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  console.log(initialObject);
 
   useEffect(() => {
     if (data !== undefined) {
       switch (data) {
         case 'customer':
-          setInitialObject((prevObject) => ({
-            ...prevObject,
+          setInitialObject(() => ({
             firstName: '', // Required, MaxLength(100)
             lastName: '', // Required, MaxLength(100)
             companyName: undefined, // MaxLength(100), Optional
@@ -31,13 +34,26 @@ const ModalGen = ({ show, setShow, data }) => {
             email2: undefined, // MaxLength(200), EmailAddress, Optional
             extraDetails: undefined, // Optional
           }));
+          setEndpoint('https://localhost:7280/api/Customer/create');
+          setAction('Adding customer');
           break;
-
+        case 'job': {
+          setInitialObject(() => ({
+            Name: '', // string, required, max length: 100
+            Description: '', // string, required
+            Price: 0, // decimal, required
+            Deposit: 0, // decimal, required
+            ToBeCompleted: new Date(), // DateTime, required
+          }));
+          setEndpoint(`https://localhost:7280/api/Job/${customerId}`);
+          setAction('Adding job');
+          break;
+        }
         default:
           break;
       }
     }
-  }, [data]);
+  }, [data, customerId]);
 
   useEffect(() => {
     setColumns(Object.keys(initialObject));
@@ -45,19 +61,25 @@ const ModalGen = ({ show, setShow, data }) => {
 
   const handleClose = () => setShow(false);
 
-  const handleAddCustomer = async () => {
+  const handleAdd = async () => {
     //checks
-    const errors = validateForm(initialObject);
+    const errors = validateForm(initialObject, action);
     if (errors.length > 0) {
       setErrorsO([]);
       setErrorsO((prevErrors) => [...prevErrors, ...errors]);
     } else {
       try {
-        console.log('Adding customer');
-        const endpoint = 'https://localhost:7280/api/Customer/create';
+        console.log(action);
+        console.log(endpoint);
+        console.log(initialObject);
         const responseId = await addAxiosFunction(endpoint, initialObject);
         dispatch(getCustomers);
-        navigate(`/customer/${responseId}`);
+        if (action === 'Adding customer') {
+          navigate(`/customer/${responseId}`);
+        }
+        if (action === 'Adding job') {
+          navigate(`/customer/${customerId}`);
+        }
       } catch (error) {
         console.log(error.message);
         setErrorsO([]);
@@ -66,28 +88,59 @@ const ModalGen = ({ show, setShow, data }) => {
     }
   };
 
+  function isDateType(value) {
+    return value instanceof Date && !isNaN(value);
+  }
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>{action}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             {columns.map((column) => (
               <Form.Group key={column} controlId={column}>
                 <FloatingLabel className='mb-3' label={convertToLabel(column)}>
-                  <Form.Control
-                    type='text'
-                    placeholder={`Enter ${convertToLabel(column)}`}
-                    value={initialObject[column]}
-                    onChange={(e) =>
-                      setInitialObject((prevObject) => ({
-                        ...prevObject,
-                        [column]: e.target.value,
-                      }))
-                    }
-                  />
+                  {isDateType(initialObject[column]) ? (
+                    <input
+                      type='date'
+                      className='form-control'
+                      value={initialObject[column].toISOString().split('T')[0]}
+                      onChange={(e) =>
+                        setInitialObject((prevObject) => ({
+                          ...prevObject,
+                          [column]: new Date(e.target.value),
+                        }))
+                      }
+                    />
+                  ) : (
+                    <Form.Control
+                      type='text'
+                      placeholder={`Enter ${convertToLabel(column)}`}
+                      value={initialObject[column]}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+
+                        setInitialObject((prevObject) => ({
+                          ...prevObject,
+                          [column]: isDateType(prevObject[column])
+                            ? new Date(newValue)
+                            : newValue,
+                          // Parse Price and Deposit as decimals
+                          Price:
+                            column === 'Price'
+                              ? parseFloat(newValue)
+                              : prevObject.Price,
+                          Deposit:
+                            column === 'Deposit'
+                              ? parseFloat(newValue)
+                              : prevObject.Deposit,
+                        }));
+                      }}
+                    />
+                  )}
                 </FloatingLabel>
               </Form.Group>
             ))}
@@ -97,7 +150,7 @@ const ModalGen = ({ show, setShow, data }) => {
           <Button variant='secondary' onClick={handleClose}>
             Close
           </Button>
-          <Button variant='primary' onClick={handleAddCustomer}>
+          <Button variant='primary' onClick={handleAdd}>
             Add
           </Button>
           <Col className=' col-12'>

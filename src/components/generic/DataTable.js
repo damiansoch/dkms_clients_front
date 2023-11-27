@@ -1,5 +1,6 @@
-import React from 'react';
 import { Card, CardBody, Table } from 'react-bootstrap';
+import { convertToLabel } from '../../genericFunctions/converters';
+import { checkIfDate } from '../../genericFunctions/functions';
 
 const DataTable = ({ data }) => {
   const keys = Object.keys(data);
@@ -17,8 +18,12 @@ const DataTable = ({ data }) => {
 
               return (
                 <tr key={key}>
-                  <td className='table_key'>{key}</td>
-                  <td>{data[key]}</td>
+                  <td className='table_key'>{convertToLabel(key)}</td>
+                  <td>
+                    {checkIfDate(data[key])
+                      ? data[key].split('T')[0]
+                      : data[key]}
+                  </td>
                 </tr>
               );
             })}
