@@ -163,18 +163,18 @@ const AllUsersTable = ({ customers }) => {
           ))}
         </tbody>
       </Table>
-      <Row>
-        <div className=' col-10 d-flex align-items-center justify-content-center'>
+      <div>
+        <div className='col-12 d-flex justify-content-end mb-3'>
+          <Button onClick={handleShowModal}>New Customer</Button>
+        </div>
+        <div className=' col-12 d-flex align-items-center justify-content-center'>
           <PaginationComponent
             totalPages={totalPages}
             currentPage={currentPage}
             onPageChange={handlePageChange}
           />
         </div>
-        <div className='col-2'>
-          <Button onClick={handleShowModal}>New Customer</Button>
-        </div>
-      </Row>
+      </div>
       {resultMessage !== '' && (
         <NoData variant={'success'} data={resultMessage} />
       )}
