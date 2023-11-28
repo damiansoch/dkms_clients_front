@@ -6,9 +6,12 @@ import SpinnerComponent from '../generic/SpinnerComponent';
 import ErrorComponent from '../generic/ErrorComponent';
 import { TbListDetails, TbEditCircle } from 'react-icons/tb';
 import { TiUserDeleteOutline } from 'react-icons/ti';
+import { IoIosPersonAdd } from 'react-icons/io';
 import ConfirmatoinModal from '../generic/ConfirmatoinModal';
 import { deleteAxiosFunction } from '../../genericFunctions/axiosFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
+import { addEditCustomer } from '../../CRUD functions/customerFunctions';
+import { useNavigate } from 'react-router-dom';
 
 const AllCustomers = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -16,6 +19,7 @@ const AllCustomers = () => {
   const [isError0, setIsError0] = useState(false);
   const [message0, setMessage0] = useState('');
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { customers, isLoading, isError, errorMessage } = useSelector(
     (state) => state.customers
@@ -62,6 +66,15 @@ const AllCustomers = () => {
   }, [errorMessage]);
   return (
     <>
+      <Row className=' my-3 d-flex justify-content-end'>
+        <IoIosPersonAdd
+          size={50}
+          className='col-2 text-success icon'
+          onClick={() => {
+            navigate('addEdit/addCustomer');
+          }}
+        />
+      </Row>
       {message0.length > 0 && (
         <ErrorComponent
           variant={isError0 ? 'danger' : 'success'}
@@ -70,6 +83,8 @@ const AllCustomers = () => {
       )}
       {isLoading ? (
         <SpinnerComponent />
+      ) : customers.lenght === 0 ? (
+        <ErrorComponent variant='info' data='No customers found' />
       ) : !isError ? (
         <Table striped bordered hover className=' mt-3'>
           <thead>
