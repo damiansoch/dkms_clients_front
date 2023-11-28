@@ -3,7 +3,12 @@ import { Button, Modal } from 'react-bootstrap';
 
 const ConfirmatoinModal = ({ show, onHide, onConfirm, message }) => {
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal
+      show={show}
+      onHide={onHide}
+      aria-labelledby='contained-modal-title-vcenter'
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title>Confirmation</Modal.Title>
       </Modal.Header>

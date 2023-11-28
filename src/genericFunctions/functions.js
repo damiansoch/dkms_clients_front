@@ -7,10 +7,3 @@ export const isResponseSuccess = (response) => {
     return false;
   }
 };
-
-export const setTemporaryError = (message, state) => {
-  state(message);
-  setInterval(() => {
-    state('');
-  }, 3000);
-};

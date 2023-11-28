@@ -8,15 +8,13 @@ import { TbListDetails, TbEditCircle } from 'react-icons/tb';
 import { TiUserDeleteOutline } from 'react-icons/ti';
 import ConfirmatoinModal from '../generic/ConfirmatoinModal';
 import { deleteAxiosFunction } from '../../genericFunctions/axiosFunctions';
-import {
-  isResponseSuccess,
-  setTemporaryError,
-} from '../../genericFunctions/functions';
+import { isResponseSuccess } from '../../genericFunctions/functions';
 
 const AllCustomers = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState({});
-  const [error0, setError0] = useState('');
+  const [isError0, setIsError0] = useState(false);
+  const [message0, setMessage0] = useState('');
 
   const dispatch = useDispatch();
   const { customers, isLoading, isError, errorMessage } = useSelector(
@@ -28,18 +26,26 @@ const AllCustomers = () => {
 
   //delete and modal setup
   const customerDeleteHandler = (customer) => {
+    setMessage0('');
+    setIsError0(false);
     setSelectedCustomer(customer);
     setShowConfirmModal(true);
   };
   const handleConfirm = async () => {
     const endpoint = `https://localhost:7280/api/Customer/remove/${selectedCustomer.id}`;
+    //const endpoint = `https://localhost:7280/api/Customer/remove/c53ff3dd-d0f5-4031-9018-4d07362ec892`;
     let response = await deleteAxiosFunction(endpoint);
     let isSuccess = isResponseSuccess(response);
+
     if (isSuccess) {
+      setShowConfirmModal(false);
+      setMessage0(response.data);
+      dispatch(getCustomers());
     } else {
-      setTemporaryError(response.data, setError0);
+      setIsError0(true);
+      setShowConfirmModal(false);
+      setMessage0(response.data);
     }
-    setShowConfirmModal(false);
   };
 
   const handleCancel = () => {
@@ -49,13 +55,19 @@ const AllCustomers = () => {
   };
 
   useDispatch(() => {
-    if (isError) {
-      setError0(errorMessage);
+    if (errorMessage.length > 0) {
+      setIsError0(true);
+      setMessage0(errorMessage);
     }
-  }, [isError]);
+  }, [errorMessage]);
   return (
     <>
-      {error0.length > 0 && <ErrorComponent variant='danger' data={error0} />}
+      {message0.length > 0 && (
+        <ErrorComponent
+          variant={isError0 ? 'danger' : 'success'}
+          data={message0}
+        />
+      )}
       {isLoading ? (
         <SpinnerComponent />
       ) : !isError ? (
