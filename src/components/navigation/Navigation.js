@@ -7,9 +7,8 @@ const Navigation = () => {
   return (
     <Navbar
       expand='lg'
-      bg='primary'
       data-bs-theme='dark'
-      className='bg-body-tertiary'
+      className='navbar navbar-expand-lg bg-primary'
     >
       <Navbar.Brand href='#home'>DKMS_WD Management</Navbar.Brand>
       <Navbar.Toggle aria-controls='basic-navbar-nav' />

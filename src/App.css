@@ -21,3 +21,6 @@ a:hover {
   color: #888 !important; /* Set the desired color for inactive items */
   cursor: not-allowed !important;
 }
+.icon {
+  cursor: pointer;
+}

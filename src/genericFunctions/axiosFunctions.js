@@ -3,26 +3,32 @@ import axios from 'axios';
 export const updateAxiosFunction = async (endpoint, editedData) => {
   try {
     const response = await axios.put(endpoint, editedData);
-    return response.data;
+    console.log(response);
+    return response;
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error('Error updating user:', error.response);
+    return error.response;
   }
 };
 
 export const deleteAxiosFunction = async (endpoint) => {
   try {
     const response = await axios.delete(endpoint);
-    return response.data;
+    console.log(response);
+    return response;
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error('Error updating user:', error.response);
+    return error.response;
   }
 };
 
 export const addAxiosFunction = async (endpoint, addedData) => {
   try {
     const response = await axios.post(endpoint, addedData);
-    return response.data;
+    console.log(response);
+    return response;
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error('Error updating user:', error.response);
+    return error.response;
   }
 };
