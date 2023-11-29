@@ -10,7 +10,7 @@ import {
   CardFooter,
 } from 'react-bootstrap';
 import ErrorComponent from './ErrorComponent';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomerDetails } from '../../store/selectedCustomerSlice';
 import { convertToLabel } from '../../genericFunctions/converters';
@@ -18,6 +18,7 @@ import SpinnerComponent from './SpinnerComponent';
 import { validateData } from '../../genericFunctions/dataValidators';
 import { editContact } from '../../CRUD functions/classes/contactFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
+import { IoAddOutline } from 'react-icons/io5';
 
 const EditableTable = () => {
   const [data, setData] = useState({});
@@ -26,9 +27,11 @@ const EditableTable = () => {
   const [editedItem, setEditedItem] = useState({});
   const [message0, setMessage0] = useState([]);
   const [action, setAction] = useState('');
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { selectedCustomer, isLoading, isError, errorMessage } = useSelector(
     (state) => state.selectedCustomer
@@ -84,6 +87,16 @@ const EditableTable = () => {
       }
     }
   };
+  useEffect(() => {
+    if (shouldNavigate) {
+      if (action === 'addcontacts') {
+        setMessage0("Can't add more contacts");
+      } else {
+        navigate(`/addEdit/${action}/${id}`);
+        setShouldNavigate(false); // Reset the trigger
+      }
+    }
+  }, [shouldNavigate, action, id, navigate]);
   return (
     <>
       {isLoading && <SpinnerComponent />}
@@ -121,6 +134,18 @@ const EditableTable = () => {
             Jobs
           </Button>
         </ButtonGroup>
+      </Row>
+      <Row>
+        <div
+          onClick={() => {
+            setAction(`add${detailsSelected}`);
+            setShouldNavigate(true);
+          }}
+          className=' ms-auto col-3 icon text-end'
+        >
+          <IoAddOutline size={50} className='    text-success' />{' '}
+          <span>Add {convertToLabel(detailsSelected)}</span>
+        </div>
       </Row>
       {Object.keys(data).length === 0 ? (
         <ErrorComponent variant='info' data='No data available' />

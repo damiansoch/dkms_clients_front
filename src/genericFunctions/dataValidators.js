@@ -36,6 +36,17 @@ export function validateData(data, action) {
       };
       break;
 
+    case 'addaddresses':
+      validationRules = {
+        houseNumber: { IsNumber: true },
+        houseName: { MaxLength: 100 },
+        addressLine1: { MaxLength: 250 },
+        addressLine2: { MaxLength: 250 },
+        addressLine3: { MaxLength: 250 },
+        eirCode: { IsEircode: true },
+      };
+      break;
+
     default:
       break;
   }
@@ -67,9 +78,19 @@ export function validateData(data, action) {
       if (rules.EmailAddress && data[prop] && !isValidEmail(data[prop])) {
         errors.push(`${convertToLabel(prop)} should be a valid email address.`);
       }
+      // Check if property is a valid positive number
+      if (rules.IsNumber && data[prop] && !isValidNumber(data[prop])) {
+        errors.push(
+          `${convertToLabel(prop)} should be a positive whole number.`
+        );
+      }
+      // Check if property is a valid Eircode
+      if (rules.IsEircode && data[prop] && !isValidEircode(data[prop])) {
+        errors.push(`${convertToLabel(prop)} should be a valid Eircode.`);
+      }
     }
   }
-
+  console.log(errors);
   return errors;
 }
 
@@ -77,4 +98,14 @@ export function validateData(data, action) {
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+// Helper function to validate a positive integer
+function isValidNumber(value) {
+  const positiveWholeNumberRegex = /^[1-9]\d*$/;
+  return positiveWholeNumberRegex.test(value);
+}
+// Helper function to validate a positive integer
+function isValidEircode(value) {
+  const eircodeRegex = /^[AC-FHKNPRTV-Y][0-9W][0-9AC-FHKNPRTV-Y\s]{5}$/;
+  return eircodeRegex.test(value);
 }

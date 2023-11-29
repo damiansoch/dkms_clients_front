@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
-import { addEditCustomer } from '../../CRUD functions/customerFunctions';
+import { addEditCustomer as addEditObject } from '../../CRUD functions/addEditFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomers } from '../../store/customersSlice';
@@ -33,30 +33,43 @@ const AddEditComponent = () => {
   const { action, id } = useParams();
 
   useEffect(() => {
-    switch (id) {
-      case '0':
-        setInitialObject({
-          firstName: '',
-          lastName: '',
-          companyName: '',
-          phoneNumber: '',
-          phoneNumber2: '',
-          email: '',
-          email2: '',
-          extraDetails: '',
-        });
-        break;
+    if (action === ('addCustomer' || 'editCustomer')) {
+      console.log('1');
+      switch (id) {
+        case '0':
+          setInitialObject({
+            firstName: '',
+            lastName: '',
+            companyName: '',
+            phoneNumber: '',
+            phoneNumber2: '',
+            email: '',
+            email2: '',
+            extraDetails: '',
+          });
+          break;
 
-      default:
-        setInitialObject({
-          id: selectedCustomer.id,
-          firstName: selectedCustomer.firstName,
-          lastName: selectedCustomer.lastName,
-          companyName: selectedCustomer.companyName,
-        });
-        break;
+        default:
+          setInitialObject({
+            id: selectedCustomer.id,
+            firstName: selectedCustomer.firstName,
+            lastName: selectedCustomer.lastName,
+            companyName: selectedCustomer.companyName,
+          });
+          break;
+      }
+    } else if (action === 'addaddresses') {
+      setInitialObject({
+        customerId: id,
+        houseNumber: null, // or a specific integer value
+        houseName: '', // empty string or specific string value
+        addressLine1: '', // empty string or specific string value
+        addressLine2: '', // empty string or specific string value
+        addressLine3: '', // empty string or specific string value
+        eirCode: '', // empty string or specific string value
+      });
     }
-  }, [id, selectedCustomer]);
+  }, [id, selectedCustomer, action]);
 
   useEffect(() => {
     if (id !== '0') {
@@ -84,7 +97,7 @@ const AddEditComponent = () => {
     if (errors.length > 0) {
       setMessage0(errors);
     } else {
-      const response = await addEditCustomer(initialObject, action);
+      const response = await addEditObject(initialObject, action);
       const isSuccess = isResponseSuccess(response);
       if (isSuccess) {
         setMessage0(response.data);
@@ -100,15 +113,13 @@ const AddEditComponent = () => {
     <>
       {isLoading && <SpinnerComponent />}
       <Card className=' mt-3'>
-        <CardHeader className=' text-center h3'>
-          {convertToLabel(action)}
-        </CardHeader>
+        <CardHeader className=' text-center h3'>Add</CardHeader>
         <CardBody>
           <Form onSubmit={handleSubmit} className=' mt-3'>
             <Table striped bordered hover responsive>
               <tbody>
                 {Object.keys(initialObject).map((key) =>
-                  key === 'id' ? null : (
+                  key === 'id' || key === 'customerId' ? null : (
                     <tr key={key}>
                       <td>{convertToLabel(key)}</td>
                       <td>
