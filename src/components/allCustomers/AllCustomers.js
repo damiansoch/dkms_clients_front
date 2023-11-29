@@ -10,7 +10,6 @@ import { IoIosPersonAdd } from 'react-icons/io';
 import ConfirmatoinModal from '../generic/ConfirmatoinModal';
 import { deleteAxiosFunction } from '../../genericFunctions/axiosFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
-import { addEditCustomer } from '../../CRUD functions/customerFunctions';
 import { useNavigate } from 'react-router-dom';
 
 const AllCustomers = () => {
@@ -71,7 +70,7 @@ const AllCustomers = () => {
           size={50}
           className='col-2 text-success icon'
           onClick={() => {
-            navigate('addEdit/addCustomer');
+            navigate('addEdit/addCustomer/0');
           }}
         />
       </Row>
@@ -110,6 +109,9 @@ const AllCustomers = () => {
                     <TbEditCircle
                       size={30}
                       className=' text-warning icon col-4'
+                      onClick={() => {
+                        navigate(`addEdit/editCustomer/${customer.id}`);
+                      }}
                     />
                     <TiUserDeleteOutline
                       size={30}

@@ -6,14 +6,18 @@ import {
   CardFooter,
   CardHeader,
   Form,
+  Table,
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
 import { addEditCustomer } from '../../CRUD functions/customerFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCustomers } from '../../store/customersSlice';
 import ErrorComponent from './ErrorComponent';
+import { getCustomerDetails } from '../../store/selectedCustomerSlice';
+import { validateData } from '../../genericFunctions/dataValidators';
+import SpinnerComponent from './SpinnerComponent';
 
 const AddEditComponent = () => {
   const [initialObject, setInitialObject] = useState({});
@@ -21,11 +25,16 @@ const AddEditComponent = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { action } = useParams();
+
+  const { selectedCustomer, isLoading, isError, errorMessage } = useSelector(
+    (state) => state.selectedCustomer
+  );
+
+  const { action, id } = useParams();
 
   useEffect(() => {
-    switch (action) {
-      case 'addCustomer':
+    switch (id) {
+      case '0':
         setInitialObject({
           firstName: '',
           lastName: '',
@@ -39,9 +48,21 @@ const AddEditComponent = () => {
         break;
 
       default:
+        setInitialObject({
+          id: selectedCustomer.id,
+          firstName: selectedCustomer.firstName,
+          lastName: selectedCustomer.lastName,
+          companyName: selectedCustomer.companyName,
+        });
         break;
     }
-  }, [action]);
+  }, [id, selectedCustomer]);
+
+  useEffect(() => {
+    if (id !== '0') {
+      dispatch(getCustomerDetails({ id }));
+    }
+  }, [dispatch, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,127 +72,71 @@ const AddEditComponent = () => {
     }));
   };
 
+  useEffect(() => {
+    if (isError) {
+      setMessage0(errorMessage);
+    }
+  }, [isError, errorMessage]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await addEditCustomer(initialObject, action);
-    const isSuccess = isResponseSuccess(response);
-    if (isSuccess) {
-      setMessage0(response.data);
-      dispatch(getCustomers());
-      navigate('/');
+    let errors = validateData(initialObject, action);
+    if (errors.length > 0) {
+      setMessage0(errors);
     } else {
-      console.log(response.data);
-      setMessage0(response.data);
+      const response = await addEditCustomer(initialObject, action);
+      const isSuccess = isResponseSuccess(response);
+      if (isSuccess) {
+        setMessage0(response.data);
+        dispatch(getCustomers());
+        navigate('/');
+      } else {
+        console.log(response.data);
+        setMessage0(response.data);
+      }
     }
   };
   return (
-    <Card className=' mt-3'>
-      <CardHeader className=' text-center h3'>
-        {convertToLabel(action)}
-      </CardHeader>
-      <CardBody>
-        <Form onSubmit={handleSubmit} className=' mt-3'>
-          <Form.Group controlId='firstName'>
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type='text'
-              name='firstName'
-              value={initialObject.firstName}
-              onChange={handleChange}
-              maxLength={100}
-              required
-            />
-          </Form.Group>
+    <>
+      {isLoading && <SpinnerComponent />}
+      <Card className=' mt-3'>
+        <CardHeader className=' text-center h3'>
+          {convertToLabel(action)}
+        </CardHeader>
+        <CardBody>
+          <Form onSubmit={handleSubmit} className=' mt-3'>
+            <Table striped bordered hover responsive>
+              <tbody>
+                {Object.keys(initialObject).map((key) =>
+                  key === 'id' ? null : (
+                    <tr key={key}>
+                      <td>{convertToLabel(key)}</td>
+                      <td>
+                        <Form.Control
+                          type='text'
+                          name={key}
+                          value={initialObject[key]}
+                          onChange={handleChange}
+                        />
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </Table>
 
-          <Form.Group controlId='lastName'>
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type='text'
-              name='lastName'
-              value={initialObject.lastName}
-              onChange={handleChange}
-              maxLength={100}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId='companyName'>
-            <Form.Label>Company Name</Form.Label>
-            <Form.Control
-              type='text'
-              name='companyName'
-              value={initialObject.companyName}
-              onChange={handleChange}
-              maxLength={100}
-            />
-          </Form.Group>
-
-          <Form.Group controlId='phoneNumber'>
-            <Form.Label>Phone Number</Form.Label>
-            <Form.Control
-              type='tel'
-              name='phoneNumber'
-              value={initialObject.phoneNumber}
-              onChange={handleChange}
-              maxLength={50}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId='phoneNumber2'>
-            <Form.Label>Phone Number 2</Form.Label>
-            <Form.Control
-              type='tel'
-              name='phoneNumber2'
-              value={initialObject.phoneNumber2 || ''}
-              onChange={handleChange}
-              maxLength={50}
-            />
-          </Form.Group>
-
-          <Form.Group controlId='email'>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type='email'
-              name='email'
-              value={initialObject.email}
-              onChange={handleChange}
-              maxLength={200}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group controlId='email2'>
-            <Form.Label>Email 2</Form.Label>
-            <Form.Control
-              type='email'
-              name='email2'
-              value={initialObject.email2 || ''}
-              onChange={handleChange}
-              maxLength={200}
-            />
-          </Form.Group>
-
-          <Form.Group controlId='extraDetails'>
-            <Form.Label>Extra Details</Form.Label>
-            <Form.Control
-              as='textarea'
-              rows={3}
-              name='extraDetails'
-              value={initialObject.extraDetails || ''}
-              onChange={handleChange}
-            />
-          </Form.Group>
-
-          <Button variant='primary' type='submit' className=' mt-2'>
-            Submit
-          </Button>
-        </Form>
-      </CardBody>
-      <CardFooter>
-        {message0 !== '' && <ErrorComponent variant='danger' data={message0} />}
-      </CardFooter>
-    </Card>
+            <Button variant='primary' type='submit' className=' mt-2'>
+              Submit
+            </Button>
+          </Form>
+        </CardBody>
+        <CardFooter>
+          {message0 !== '' && (
+            <ErrorComponent variant='danger' data={message0} />
+          )}
+        </CardFooter>
+      </Card>
+    </>
   );
 };
 

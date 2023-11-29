@@ -13,3 +13,11 @@ export class AddCustomerRequestDto {
     this.ExtraDetails = null;
   }
 }
+export class EditCustomerRequestDto {
+  constructor() {
+    // for customer
+    this.FirstName = '';
+    this.LastName = '';
+    this.CompanyName = '';
+  }
+}

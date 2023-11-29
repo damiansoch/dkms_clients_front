@@ -13,7 +13,7 @@ function App() {
         <Navigation />
         <Routes>
           <Route path='/' element={<AllCustomers />} />
-          <Route path='addEdit/:action' element={<AddEditComponent />} />
+          <Route path='addEdit/:action/:id' element={<AddEditComponent />} />
         </Routes>
       </Container>
     </div>
