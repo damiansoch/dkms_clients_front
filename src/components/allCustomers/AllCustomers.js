@@ -105,6 +105,9 @@ const AllCustomers = () => {
                     <TbListDetails
                       size={30}
                       className=' text-info  icon col-4'
+                      onClick={() => {
+                        navigate(`details/${customer.id}`);
+                      }}
                     />
                     <TbEditCircle
                       size={30}

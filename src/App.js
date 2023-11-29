@@ -5,6 +5,7 @@ import Navigation from './components/navigation/Navigation';
 import AllCustomers from './components/allCustomers/AllCustomers';
 import { Route, Routes } from 'react-router-dom';
 import AddEditComponent from './components/generic/AddEditComponent';
+import EditableTable from './components/generic/EditableTable';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path='/' element={<AllCustomers />} />
           <Route path='addEdit/:action/:id' element={<AddEditComponent />} />
+          <Route path='details/:id' element={<EditableTable />} />
         </Routes>
       </Container>
     </div>
