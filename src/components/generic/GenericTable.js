@@ -4,7 +4,8 @@ import { TiUserDeleteOutline } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
 import { format, parseISO } from 'date-fns';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import AppContext from '../../Context/context';
 
 const GenericTable = ({
   dataPassed,
@@ -13,12 +14,6 @@ const GenericTable = ({
   excludeFields = [],
 }) => {
   const navigate = useNavigate();
-
-  // Infer fields from the first item in the data array and exclude specified fields
-  const fields =
-    data.length > 0
-      ? Object.keys(data[0]).filter((key) => !excludeFields.includes(key))
-      : [];
 
   // Function to format date if it's in ISO format
   const formatDate = (value) => {
@@ -33,12 +28,50 @@ const GenericTable = ({
     navigate(`/details/${job.customerId}`);
   };
 
+  //setup search component
+  const {
+    updateSearchBy,
+    updateSearchVisibility,
+    updateInitialSearchArray,
+    resultSearchArray,
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    updateSearchVisibility(true);
+    return () => {
+      updateSearchVisibility(false);
+    };
+  }, [updateSearchVisibility]);
+  useEffect(() => {
+    updateInitialSearchArray(data);
+
+    return () => {
+      updateInitialSearchArray([]);
+    };
+    // eslint-disable-next-line
+  }, [data]);
+
+  // Infer fields from the first item in the data array and exclude specified fields
+
+  const fields =
+    resultSearchArray.length > 0
+      ? Object.keys(resultSearchArray[0]).filter(
+          (key) => !excludeFields.includes(key)
+        )
+      : [];
+
   return (
     <Table striped bordered hover className='mt-3'>
       <thead>
         <tr>
           {fields.map((field, index) => (
-            <th key={index} className='table_header'>
+            <th
+              onClick={() => {
+                updateSearchBy(field);
+              }}
+              key={index}
+              className='table_header'
+            >
               {convertToLabel(field)}
             </th>
           ))}
@@ -48,7 +81,7 @@ const GenericTable = ({
         </tr>
       </thead>
       <tbody>
-        {data.map((item, index) => (
+        {resultSearchArray.map((item, index) => (
           <tr key={index}>
             {fields.map((field, idx) => (
               <td

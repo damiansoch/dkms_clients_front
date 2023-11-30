@@ -23,7 +23,9 @@ const SearchComponent = () => {
   const changeHandler = (text) => {
     setSearchText(text);
     let filteredResult = initialSearchArray.filter((item) =>
-      item[searchBy].toLowerCase().includes(text.toLowerCase())
+      item[searchBy] != null
+        ? item[searchBy].toString().toLowerCase().includes(text.toLowerCase())
+        : item
     );
     updateResultSearchArray(filteredResult);
   };
