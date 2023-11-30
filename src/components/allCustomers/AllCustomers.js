@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { getCustomers } from '../../store/customersSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Table } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import SpinnerComponent from '../generic/SpinnerComponent';
 import ErrorComponent from '../generic/ErrorComponent';
-import { TbListDetails, TbEditCircle } from 'react-icons/tb';
-import { TiUserDeleteOutline } from 'react-icons/ti';
 import { IoIosPersonAdd } from 'react-icons/io';
 import ConfirmatoinModal from '../generic/ConfirmatoinModal';
 import { deleteAxiosFunction } from '../../genericFunctions/axiosFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
 import { useNavigate } from 'react-router-dom';
+import GenericTable from '../generic/GenericTable';
 
 const AllCustomers = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -85,48 +84,13 @@ const AllCustomers = () => {
       ) : customers.lenght === 0 ? (
         <ErrorComponent variant='info' data='No customers found' />
       ) : !isError ? (
-        <Table striped bordered hover className=' mt-3'>
-          <thead>
-            <tr>
-              <th className='table_header'>First Name</th>
-              <th className='table_header'>Last Name</th>
-              <th className='table_header'>Company Name</th>
-              <th className='table_header'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers.map((customer, index) => (
-              <tr key={index}>
-                <td>{customer.firstName}</td>
-                <td>{customer.lastName}</td>
-                <td>{customer.companyName}</td>
-                <td>
-                  <Row className='text-center'>
-                    <TbListDetails
-                      size={30}
-                      className=' text-info  icon col-4'
-                      onClick={() => {
-                        navigate(`details/${customer.id}`);
-                      }}
-                    />
-                    <TbEditCircle
-                      size={30}
-                      className=' text-warning icon col-4'
-                      onClick={() => {
-                        navigate(`addEdit/editCustomer/${customer.id}`);
-                      }}
-                    />
-                    <TiUserDeleteOutline
-                      size={30}
-                      className=' text-danger  icon col-4'
-                      onClick={() => customerDeleteHandler(customer)}
-                    />
-                  </Row>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <>
+          <GenericTable
+            data={customers}
+            customerDeleteHandler={customerDeleteHandler}
+            excludeFields={['id', 'contacts', 'addresses', 'jobs', 'created']}
+          />
+        </>
       ) : (
         <ErrorComponent variant='danger' data={errorMessage} />
       )}

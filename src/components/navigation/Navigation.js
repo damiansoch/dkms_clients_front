@@ -17,7 +17,7 @@ const Navigation = () => {
           <Link className='mx-3' to='/'>
             Customers
           </Link>
-          <Link className='mx-3' to='/'>
+          <Link className='mx-3' to='/allJobs'>
             Jobs
           </Link>
           <NavDropdown
