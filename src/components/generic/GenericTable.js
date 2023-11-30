@@ -12,8 +12,6 @@ const GenericTable = ({
   customerDeleteHandler = undefined,
   excludeFields = [],
 }) => {
-  const [searchBy, setSerchBy] = useState('firstName');
-  console.log(searchBy);
   const navigate = useNavigate();
 
   // Infer fields from the first item in the data array and exclude specified fields
@@ -40,13 +38,7 @@ const GenericTable = ({
       <thead>
         <tr>
           {fields.map((field, index) => (
-            <th
-              key={index}
-              className='table_header'
-              onClick={() => {
-                setSerchBy(field);
-              }}
-            >
+            <th key={index} className='table_header'>
               {convertToLabel(field)}
             </th>
           ))}
