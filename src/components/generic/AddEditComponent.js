@@ -37,7 +37,6 @@ const AddEditComponent = () => {
 
   useEffect(() => {
     if (action === ('addCustomer' || 'editCustomer')) {
-      console.log('1');
       switch (id) {
         case '0':
           setInitialObject({
@@ -114,7 +113,11 @@ const AddEditComponent = () => {
       if (isSuccess) {
         setMessage0(response.data);
         dispatch(getCustomers());
-        navigate('/');
+        if (action === 'addCustomer') {
+          navigate(`/details/${response.data}`);
+        } else {
+          navigate(`/details/${id}`);
+        }
       } else {
         console.log(response.data);
         setMessage0(response.data);

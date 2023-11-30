@@ -39,7 +39,6 @@ const EditableTable = () => {
   const { selectedCustomer, isLoading, isError, errorMessage } = useSelector(
     (state) => state.selectedCustomer
   );
-  console.log(detailsSelected);
 
   const handleEdit = (key, value) => {
     const newData = { ...editedItem };
@@ -177,16 +176,18 @@ const EditableTable = () => {
         </ButtonGroup>
       </Row>
       <Row>
-        <div
-          onClick={() => {
-            setAction(`add${detailsSelected}`);
-            setShouldNavigate(true);
-          }}
-          className=' ms-auto col-3 icon text-end'
-        >
-          <IoAddOutline size={50} className='    text-success' />{' '}
-          <span>Add {convertToLabel(detailsSelected)}</span>
-        </div>
+        {detailsSelected !== 'contacts' && (
+          <div
+            onClick={() => {
+              setAction(`add${detailsSelected}`);
+              setShouldNavigate(true);
+            }}
+            className=' ms-auto col-3 icon text-end'
+          >
+            <IoAddOutline size={50} className='    text-success' />{' '}
+            <span>Add {convertToLabel(detailsSelected)}</span>
+          </div>
+        )}
       </Row>
       {message0.length > 0 && (
         <ErrorComponent
