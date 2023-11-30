@@ -2,13 +2,14 @@ import {
   addAxiosFunction,
   updateAxiosFunction,
 } from '../genericFunctions/axiosFunctions';
-import { AddAddressRequestDto } from './classes/address';
+import { AddAddressRequestDto, AddJobRequestDto } from './classes/allClasses';
+import { UpdateContactRequestDto } from './classes/allClasses';
 import {
   AddCustomerRequestDto,
   EditCustomerRequestDto,
-} from './classes/customer';
+} from './classes/allClasses';
 
-export const addEditCustomer = async (receivedData, action) => {
+export const addEditObject = async (receivedData, action) => {
   let endpoint = '';
 
   var response = {};
@@ -55,5 +56,33 @@ export const addEditCustomer = async (receivedData, action) => {
     response = await addAxiosFunction(endpoint, addAddressRequest);
   }
 
+  if (action === 'editcontacts') {
+    const contactEditRequest = new UpdateContactRequestDto();
+    contactEditRequest.PhoneNumber = receivedData.phoneNumber;
+    if (receivedData.phoneNumber2 !== '') {
+      contactEditRequest.PhoneNumber2 = receivedData.phoneNumber2;
+    }
+    contactEditRequest.Email = receivedData.email;
+    if (receivedData.email2 !== '') {
+      contactEditRequest.Email2 = receivedData.email2;
+    }
+    if (receivedData.extraDetails !== '') {
+      contactEditRequest.ExtraDetails = receivedData.extraDetails;
+    }
+    endpoint = `https://localhost:7280/api/Contact/update/${receivedData.id}`;
+    response = await updateAxiosFunction(endpoint, contactEditRequest);
+  }
+
+  if (action === 'addjobs') {
+    console.log(receivedData);
+    const jobAddRequest = new AddJobRequestDto();
+    jobAddRequest.Name = receivedData.name;
+    jobAddRequest.Description = receivedData.description;
+    jobAddRequest.Price = receivedData.price;
+    jobAddRequest.Deposit = receivedData.deposit;
+    jobAddRequest.ToBeCompleted = receivedData.toBeCompleted;
+    endpoint = `https://localhost:7280/api/Job/${receivedData.customerId}`;
+    response = await addAxiosFunction(endpoint, jobAddRequest);
+  }
   return response;
 };

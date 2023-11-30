@@ -16,9 +16,10 @@ import { getCustomerDetails } from '../../store/selectedCustomerSlice';
 import { convertToLabel } from '../../genericFunctions/converters';
 import SpinnerComponent from './SpinnerComponent';
 import { validateData } from '../../genericFunctions/dataValidators';
-import { editContact } from '../../CRUD functions/classes/contactFunctions';
+//import { editContact } from '../../CRUD functions/classes/contactFunctions';
 import { isResponseSuccess } from '../../genericFunctions/functions';
 import { IoAddOutline } from 'react-icons/io5';
+import { addEditObject } from '../../CRUD functions/addEditFunctions';
 
 const EditableTable = () => {
   const [data, setData] = useState({});
@@ -73,7 +74,7 @@ const EditableTable = () => {
     if (errors.length > 0) {
       setMessage0(errors);
     } else {
-      const response = await editContact(editedItem, action);
+      const response = await addEditObject(editedItem, action);
       const isSuccess = isResponseSuccess(response);
 
       if (isSuccess) {
@@ -109,6 +110,8 @@ const EditableTable = () => {
             variant={detailsSelected !== 'contacts' ? 'info' : 'success'}
             onClick={() => {
               setDetailsSelected('contacts');
+              setEditedItem({});
+              setEditedItemId('');
             }}
           >
             Contacts
@@ -119,6 +122,8 @@ const EditableTable = () => {
             variant={detailsSelected !== 'addresses' ? 'info' : 'success'}
             onClick={() => {
               setDetailsSelected('addresses');
+              setEditedItem({});
+              setEditedItemId('');
             }}
           >
             Addresses
@@ -126,9 +131,11 @@ const EditableTable = () => {
           <Button
             active={detailsSelected === 'jobs'}
             className=' col-4'
-            variant={detailsSelected !== 'contacts' ? 'info' : 'success'}
+            variant={detailsSelected !== 'jobs' ? 'info' : 'success'}
             onClick={() => {
               setDetailsSelected('jobs');
+              setEditedItem({});
+              setEditedItemId('');
             }}
           >
             Jobs

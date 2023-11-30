@@ -47,6 +47,15 @@ export function validateData(data, action) {
       };
       break;
 
+    case 'addjobs':
+      validationRules = {
+        name: { Required: true, MaxLength: 100 },
+        description: { Required: true },
+        price: { Required: true, IsNumber: true },
+        deposit: { Required: true, IsNumber: true },
+        toBeCompleted: { Required: true, IsDate: true },
+      };
+      break;
     default:
       break;
   }
@@ -88,6 +97,10 @@ export function validateData(data, action) {
       if (rules.IsEircode && data[prop] && !isValidEircode(data[prop])) {
         errors.push(`${convertToLabel(prop)} should be a valid Eircode.`);
       }
+      // Check if property is a valid date
+      if (rules.IsDate && data[prop] && !isValidDate(data[prop])) {
+        errors.push(`${convertToLabel(prop)} should be a valid date.`);
+      }
     }
   }
   console.log(errors);
@@ -106,6 +119,15 @@ function isValidNumber(value) {
 }
 // Helper function to validate a positive integer
 function isValidEircode(value) {
-  const eircodeRegex = /^[AC-FHKNPRTV-Y][0-9W][0-9AC-FHKNPRTV-Y\s]{5}$/;
-  return eircodeRegex.test(value);
+  // const eircodeRegex = /^[AC-FHKNPRTV-Y][0-9W][0-9AC-FHKNPRTV-Y\s]{5}$/;
+  // return eircodeRegex.test(value);
+  return true;
+}
+// Helper function to validate date
+function isValidDate(dateString) {
+  const regex = /^\d{4}-\d{2}-\d{2}$/; // simple YYYY-MM-DD check
+  if (!regex.test(dateString)) return false;
+
+  const date = new Date(dateString);
+  return date.toISOString().startsWith(dateString);
 }

@@ -10,8 +10,11 @@ import {
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
-import { addEditCustomer as addEditObject } from '../../CRUD functions/addEditFunctions';
-import { isResponseSuccess } from '../../genericFunctions/functions';
+import { addEditObject } from '../../CRUD functions/addEditFunctions';
+import {
+  formatDate,
+  isResponseSuccess,
+} from '../../genericFunctions/functions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomers } from '../../store/customersSlice';
 import ErrorComponent from './ErrorComponent';
@@ -61,12 +64,21 @@ const AddEditComponent = () => {
     } else if (action === 'addaddresses') {
       setInitialObject({
         customerId: id,
-        houseNumber: null, // or a specific integer value
         houseName: '', // empty string or specific string value
+        houseNumber: null, // or a specific integer value
         addressLine1: '', // empty string or specific string value
         addressLine2: '', // empty string or specific string value
         addressLine3: '', // empty string or specific string value
         eirCode: '', // empty string or specific string value
+      });
+    } else if (action === 'addjobs') {
+      setInitialObject({
+        customerId: id,
+        name: '',
+        description: '',
+        price: 0.0,
+        deposit: 0.0,
+        toBeCompleted: formatDate(new Date()),
       });
     }
   }, [id, selectedCustomer, action]);
@@ -124,7 +136,13 @@ const AddEditComponent = () => {
                       <td>{convertToLabel(key)}</td>
                       <td>
                         <Form.Control
-                          type='text'
+                          type={
+                            key === 'price' || key === 'deposit'
+                              ? 'number'
+                              : key === 'toBeCompleted'
+                              ? 'date'
+                              : 'text'
+                          }
                           name={key}
                           value={initialObject[key]}
                           onChange={handleChange}
