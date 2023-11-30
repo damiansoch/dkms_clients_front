@@ -51,6 +51,12 @@ const GenericTable = ({
     // eslint-disable-next-line
   }, [data]);
 
+  useEffect(() => {
+    updateSearchBy('');
+
+    // eslint-disable-next-line
+  }, []);
+
   // Infer fields from the first item in the data array and exclude specified fields
 
   const fields =

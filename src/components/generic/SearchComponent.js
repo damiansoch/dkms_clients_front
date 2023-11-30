@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -29,6 +29,11 @@ const SearchComponent = () => {
     );
     updateResultSearchArray(filteredResult);
   };
+
+  useEffect(() => {
+    setSearchText('');
+  }, [initialSearchArray]);
+
   return (
     <>
       {searchVisible && (

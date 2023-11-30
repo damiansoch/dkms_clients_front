@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
   //   console.log('searching by: ' + searchBy);
   //   console.log('search visible: ' + searchVisible);
   //   console.log('initial array: ');
-  console.log(initialSearchArray);
+  //   console.log(initialSearchArray);
   //   console.log('result array: ');
   //   console.log(resultSearchArray);
 
