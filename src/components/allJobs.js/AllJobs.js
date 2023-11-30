@@ -10,7 +10,7 @@ const AllJobs = () => {
   const { jobs, isLoading, isError, errorMessage } = useSelector(
     (state) => state.jobs
   );
-  console.log(jobs);
+
   useEffect(() => {
     dispatch(getJobs());
   }, [dispatch]);

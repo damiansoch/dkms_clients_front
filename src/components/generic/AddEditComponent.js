@@ -36,7 +36,7 @@ const AddEditComponent = () => {
   const { action, id } = useParams();
 
   useEffect(() => {
-    if (action === ('addCustomer' || 'editCustomer')) {
+    if (action === 'addCustomer' || action === 'editCustomer') {
       switch (id) {
         case '0':
           setInitialObject({
