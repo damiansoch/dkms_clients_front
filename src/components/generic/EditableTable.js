@@ -20,6 +20,7 @@ import { validateData } from '../../genericFunctions/dataValidators';
 import { isResponseSuccess } from '../../genericFunctions/functions';
 import { IoAddOutline } from 'react-icons/io5';
 import { addEditObject } from '../../CRUD functions/addEditFunctions';
+import ConfirmatoinModal from './ConfirmatoinModal';
 
 const EditableTable = () => {
   const [data, setData] = useState({});
@@ -29,6 +30,7 @@ const EditableTable = () => {
   const [message0, setMessage0] = useState([]);
   const [action, setAction] = useState('');
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ const EditableTable = () => {
   const { selectedCustomer, isLoading, isError, errorMessage } = useSelector(
     (state) => state.selectedCustomer
   );
+  console.log(detailsSelected);
 
   const handleEdit = (key, value) => {
     const newData = { ...editedItem };
@@ -98,6 +101,37 @@ const EditableTable = () => {
       }
     }
   }, [shouldNavigate, action, id, navigate]);
+
+  //delete and modal setup
+  const deleteItemHandler = (id) => {
+    console.log('deleting: ' + id);
+    setEditedItemId(id);
+    setAction(`delete${detailsSelected}`);
+    setMessage0('');
+
+    setShowConfirmModal(true);
+  };
+  const handleConfirm = async () => {
+    const response = await addEditObject(editedItemId, action);
+    let isSuccess = isResponseSuccess(response);
+
+    if (isSuccess) {
+      setShowConfirmModal(false);
+      setMessage0(response.data);
+      dispatch(getCustomerDetails({ id }));
+      navigate(`/details/${id}`);
+    } else {
+      setShowConfirmModal(false);
+      setMessage0(response.data);
+    }
+  };
+
+  const handleCancel = () => {
+    console.log('Cancelled');
+    setEditedItemId(id);
+    setAction(`delete${detailsSelected}`);
+    setShowConfirmModal(false);
+  };
   return (
     <>
       {isLoading && <SpinnerComponent />}
@@ -154,6 +188,12 @@ const EditableTable = () => {
           <span>Add {convertToLabel(detailsSelected)}</span>
         </div>
       </Row>
+      {message0.length > 0 && (
+        <ErrorComponent
+          variant={isError ? 'danger' : 'success'}
+          data={message0}
+        />
+      )}
       {Object.keys(data).length === 0 ? (
         <ErrorComponent variant='info' data='No data available' />
       ) : (
@@ -190,13 +230,29 @@ const EditableTable = () => {
                 <CardFooter>
                   <div className=' d-flex justify-content-evenly'>
                     {editedItemId !== item.id ? (
-                      <Button
-                        variant='danger'
-                        size='sm'
-                        onClick={() => console.log('Delete', itemIndex)}
+                      <div
+                        style={{
+                          cursor:
+                            detailsSelected !== 'contacts'
+                              ? 'pointer'
+                              : 'not-allowed',
+                        }}
                       >
-                        Delete
-                      </Button>
+                        <Button
+                          variant='danger'
+                          size='sm'
+                          onClick={() => deleteItemHandler(item.id)}
+                          disabled={detailsSelected === 'contacts'}
+                          style={{
+                            cursor:
+                              detailsSelected !== 'contacts'
+                                ? 'pointer'
+                                : 'not-allowed',
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     ) : (
                       <Button variant='success' size='sm' type='submit'>
                         Save
@@ -214,18 +270,21 @@ const EditableTable = () => {
                       {editedItemId === item.id ? 'Cancell' : 'Edit'}
                     </Button>
                   </div>
-                  {message0.length > 0 && (
-                    <ErrorComponent
-                      variant={isError ? 'danger' : 'success'}
-                      data={message0}
-                    />
-                  )}
                 </CardFooter>
               </Card>
             </Form>
           </div>
         ))
       )}
+      <ConfirmatoinModal
+        show={showConfirmModal}
+        onHide={handleCancel}
+        onConfirm={handleConfirm}
+        message={`Are you sure you want to delete the item from ${convertToLabel(
+          detailsSelected
+        )}?
+        `}
+      />
     </>
   );
 };
