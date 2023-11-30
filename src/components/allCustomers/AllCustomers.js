@@ -86,6 +86,7 @@ const AllCustomers = () => {
       ) : !isError ? (
         <>
           <GenericTable
+            dataPassed='customers'
             data={customers}
             customerDeleteHandler={customerDeleteHandler}
             excludeFields={['id', 'contacts', 'addresses', 'jobs', 'created']}

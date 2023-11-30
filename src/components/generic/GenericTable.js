@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
 
 const GenericTable = ({
+  dataPassed,
   data,
   customerDeleteHandler = undefined,
   excludeFields = [],
@@ -26,7 +27,9 @@ const GenericTable = ({
               {convertToLabel(field)}
             </th>
           ))}
-          <th className='table_header'>Actions</th>
+          {dataPassed === 'customers' && (
+            <th className='table_header'>Actions</th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -35,26 +38,28 @@ const GenericTable = ({
             {fields.map((field, idx) => (
               <td key={idx}>{item[field]}</td>
             ))}
-            <td>
-              <Row className='text-center'>
-                {/* Actions remain as they are */}
-                <TbListDetails
-                  size={30}
-                  className='text-info icon col-4'
-                  onClick={() => navigate(`details/${item.id}`)}
-                />
-                <TbEditCircle
-                  size={30}
-                  className='text-warning icon col-4'
-                  onClick={() => navigate(`addEdit/editCustomer/${item.id}`)}
-                />
-                <TiUserDeleteOutline
-                  size={30}
-                  className='text-danger icon col-4'
-                  onClick={() => customerDeleteHandler(item)}
-                />
-              </Row>
-            </td>
+            {dataPassed === 'customers' && (
+              <td>
+                <Row className='text-center'>
+                  {/* Actions remain as they are */}
+                  <TbListDetails
+                    size={30}
+                    className='text-info icon col-4'
+                    onClick={() => navigate(`details/${item.id}`)}
+                  />
+                  <TbEditCircle
+                    size={30}
+                    className='text-warning icon col-4'
+                    onClick={() => navigate(`addEdit/editCustomer/${item.id}`)}
+                  />
+                  <TiUserDeleteOutline
+                    size={30}
+                    className='text-danger icon col-4'
+                    onClick={() => customerDeleteHandler(item)}
+                  />
+                </Row>
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
