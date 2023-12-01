@@ -1,7 +1,6 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
-import SearchComponent from '../generic/SearchComponent';
 
 const Navigation = () => {
   return (
@@ -20,7 +19,6 @@ const Navigation = () => {
           <Link className='mx-3' to='/allJobs'>
             Jobs
           </Link>
-          <SearchComponent />
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -7,6 +7,9 @@ import { format, parseISO } from 'date-fns';
 import { useContext, useEffect } from 'react';
 import AppContext from '../../Context/context';
 import { TbListSearch } from 'react-icons/tb';
+import { LiaSortSolid } from 'react-icons/lia';
+
+import TooltipGen from './TooltipGen';
 
 const GenericTable = ({
   dataPassed,
@@ -38,12 +41,6 @@ const GenericTable = ({
     resultSearchArray,
   } = useContext(AppContext);
 
-  //
-  //   //updateSearchVisibility(false);
-  //   return () => {
-  //     updateSearchVisibility(false);
-  //   };
-  // }, [updateSearchVisibility]);
   useEffect(() => {
     updateInitialSearchArray(data);
 
@@ -96,8 +93,25 @@ const GenericTable = ({
                 {convertToLabel(field)}
               </th>
             ))}
+
             {dataPassed === 'customers' && (
               <th className='table_header'>Actions</th>
+            )}
+          </tr>
+          <tr>
+            {fields.map((field, index) => (
+              <td key={index} className=' text-center table_key'>
+                <TooltipGen
+                  title={<LiaSortSolid size={20} className=' text-info' />}
+                  text={`Sort by ${convertToLabel(field)}`}
+                />
+              </td>
+            ))}
+            {dataPassed === 'customers' && (
+              <td
+                style={{ cursor: 'not-allowed' }}
+                className=' text-center table_key text-muted'
+              ></td>
             )}
           </tr>
         </thead>

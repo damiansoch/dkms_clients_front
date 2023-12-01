@@ -46,7 +46,7 @@ const SearchComponent = () => {
           <CardBody>
             <Form inline>
               <Row>
-                <Col xs='auto'>
+                <Col xs='8'>
                   <Form.Control
                     disabled={searchBy === ''}
                     type='text'
@@ -58,8 +58,12 @@ const SearchComponent = () => {
                     }}
                   />
                 </Col>
-                <Col xs='auto'>
-                  <Button disabled={searchBy === ''} type='submit'>
+                <Col xs='4' className='d-flex '>
+                  <Button
+                    style={{ width: '100%' }}
+                    disabled={searchBy === ''}
+                    type='submit'
+                  >
                     Submit
                   </Button>
                 </Col>

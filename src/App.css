@@ -13,7 +13,6 @@ a:hover {
   text-align: center;
 }
 .table_key {
-  width: 110px !important;
   background-color: aqua !important;
 }
 .pagination {
@@ -23,4 +22,12 @@ a:hover {
 }
 .icon {
   cursor: pointer;
+}
+.custom-tooltip .tooltip-inner {
+  background-color: darkblue;
+  color: white;
+}
+
+.custom-tooltip .arrow::before {
+  border-top-color: darkblue; /* or appropriate border color based on placement */
 }

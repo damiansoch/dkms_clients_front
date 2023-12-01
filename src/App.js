@@ -8,6 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 import AddEditComponent from './components/generic/AddEditComponent';
 import EditableTable from './components/generic/EditableTable';
 import AllJobs from './components/allJobs.js/AllJobs';
+import SearchComponent from './components/generic/SearchComponent';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Container>
         <AppProvider>
           <Navigation />
+          <SearchComponent />
           <Routes>
             <Route path='/' element={<AllCustomers />} />
             <Route path='/allJobs' element={<AllJobs />} />
