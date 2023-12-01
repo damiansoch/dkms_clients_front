@@ -3,7 +3,11 @@ import {
   deleteAxiosFunction,
   updateAxiosFunction,
 } from '../genericFunctions/axiosFunctions';
-import { AddAddressRequestDto, AddJobRequestDto } from './classes/allClasses';
+import {
+  AddAddressRequestDto,
+  AddJobRequestDto,
+  UpdateJobRequestDto,
+} from './classes/allClasses';
 import { UpdateContactRequestDto } from './classes/allClasses';
 import {
   AddCustomerRequestDto,
@@ -91,8 +95,20 @@ export const addEditObject = async (receivedData, action) => {
   }
 
   if (action === 'deletejobs') {
-    endpoint = `https://localhost:7280/api/Job/delete/${receivedData}`;
+    endpoint = `https://localhost:7280/api/Address/delete/${receivedData}`;
     response = await deleteAxiosFunction(endpoint);
+  }
+
+  if (action === 'editjobs') {
+    const jobUpdateRequest = new UpdateJobRequestDto();
+
+    jobUpdateRequest.Name = receivedData.name;
+    jobUpdateRequest.Description = receivedData.description;
+    jobUpdateRequest.Price = receivedData.price;
+    jobUpdateRequest.Deposit = receivedData.deposit;
+    jobUpdateRequest.ToBeCompleted = receivedData.toBeCompleted;
+    endpoint = `https://localhost:7280/api/Job/update/${receivedData.id}`;
+    response = await updateAxiosFunction(endpoint, jobUpdateRequest);
   }
 
   if (action === 'updateJobCompleted') {

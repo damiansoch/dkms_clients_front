@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { InputGroup } from 'react-bootstrap';
 
-const GenericCheckbox = ({ data, itemId, updateFunction }) => {
+const GenericCheckbox = ({
+  data,
+  itemId,
+  updateFunction,
+  disabled = false,
+}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = (event) => {
@@ -18,6 +23,7 @@ const GenericCheckbox = ({ data, itemId, updateFunction }) => {
         checked={isChecked}
         onChange={handleCheckboxChange}
         aria-label='Checkbox for following text input'
+        disabled={disabled}
       />
     </td>
   );

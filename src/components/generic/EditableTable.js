@@ -21,6 +21,7 @@ import { isResponseSuccess } from '../../genericFunctions/functions';
 import { IoAddOutline } from 'react-icons/io5';
 import { addEditObject } from '../../CRUD functions/addEditFunctions';
 import ConfirmatoinModal from './ConfirmatoinModal';
+import GenericCheckbox from './GenericCheckbox';
 
 const EditableTable = () => {
   const [data, setData] = useState({});
@@ -73,7 +74,9 @@ const EditableTable = () => {
     setMessage0([]);
 
     const errors = validateData(editedItem, action);
+
     if (errors.length > 0) {
+      console.log('running');
       setMessage0(errors);
     } else {
       const response = await addEditObject(editedItem, action);
@@ -112,6 +115,7 @@ const EditableTable = () => {
   };
   const handleConfirm = async () => {
     const response = await addEditObject(editedItemId, action);
+
     let isSuccess = isResponseSuccess(response);
 
     if (isSuccess) {
@@ -130,6 +134,26 @@ const EditableTable = () => {
     setEditedItemId(id);
     setAction(`delete${detailsSelected}`);
     setShowConfirmModal(false);
+  };
+
+  //update job completed
+  const updateJobCompleted = async (jobId, isCompleted) => {
+    setMessage0([]);
+    const updateJobRequestObj = {
+      jobId,
+      isCompleted,
+    };
+    const response = await addEditObject(
+      updateJobRequestObj,
+      'updateJobCompleted'
+    );
+    var isSuccess = isResponseSuccess(response);
+    if (isSuccess) {
+      setMessage0(response.data);
+    } else {
+      console.log(response.data);
+      setMessage0(response.data);
+    }
   };
   return (
     <>
@@ -210,7 +234,22 @@ const EditableTable = () => {
                           <tr key={key}>
                             <td>{convertToLabel(key)}</td>
                             {editedItemId !== item.id ? (
-                              <td>{item[key]}</td>
+                              key === 'completed' ? (
+                                <GenericCheckbox
+                                  data={item[key]}
+                                  itemId={item.id}
+                                  updateFunction={updateJobCompleted}
+                                  disabled={true}
+                                />
+                              ) : (
+                                <td>{item[key]}</td>
+                              )
+                            ) : key === 'completed' ? (
+                              <GenericCheckbox
+                                data={item[key]}
+                                itemId={item.id}
+                                updateFunction={updateJobCompleted}
+                              />
                             ) : (
                               <td>
                                 <input

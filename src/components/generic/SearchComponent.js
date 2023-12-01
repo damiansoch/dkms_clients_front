@@ -44,7 +44,7 @@ const SearchComponent = () => {
       {searchVisible && (
         <Card>
           <CardBody>
-            <Form inline>
+            <Form>
               <Row>
                 <Col xs='8'>
                   <Form.Control
