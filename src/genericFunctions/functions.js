@@ -20,31 +20,31 @@ export function formatDate(date) {
   return [year, month, day].join('-');
 }
 
-export function sortArrayByObjectKey(arr, key, order) {
+export function sortArrayByObjectKey(arr, key, order = 'asc') {
   if (!arr || !Array.isArray(arr) || arr.length === 0 || !key) {
     return [];
   }
 
-  // Define the compare function for ascending order
-  const compareAsc = (a, b) => {
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
+  // Function to check if a value is null, undefined, or an empty string
+  const isNullOrUndefinedOrEmpty = (value) => {
+    return value === null || value === undefined || value === '';
   };
 
-  // Define the compare function for descending order
-  const compareDesc = (a, b) => {
-    if (a < b) return 1;
-    if (a > b) return -1;
-    return 0;
-  };
-
-  // Choose the appropriate comparison function based on order
-  const compareFunction = order === 'asc' ? compareAsc : compareDesc;
-
-  return [...arr].sort((a, b) => {
+  // Define the compare function
+  const compareFunction = (a, b) => {
     let valA = a[key];
     let valB = b[key];
+
+    // Check for null, undefined or empty values
+    if (isNullOrUndefinedOrEmpty(valA) && isNullOrUndefinedOrEmpty(valB)) {
+      return 0;
+    }
+    if (isNullOrUndefinedOrEmpty(valA)) {
+      return order === 'asc' ? 1 : -1;
+    }
+    if (isNullOrUndefinedOrEmpty(valB)) {
+      return order === 'asc' ? -1 : 1;
+    }
 
     // Treat as a number if it's strictly a number
     if (
@@ -53,10 +53,19 @@ export function sortArrayByObjectKey(arr, key, order) {
       !isNaN(valB) &&
       !isNaN(parseFloat(valB))
     ) {
-      return compareFunction(Number(valA), Number(valB));
+      valA = Number(valA);
+      valB = Number(valB);
+    } else {
+      // Treat as a string
+      valA = String(valA).toLowerCase();
+      valB = String(valB).toLowerCase();
     }
 
-    // Otherwise, treat as a string
-    return compareFunction(String(valA), String(valB));
-  });
+    // Compare values
+    if (valA < valB) return order === 'asc' ? -1 : 1;
+    if (valA > valB) return order === 'asc' ? 1 : -1;
+    return 0;
+  };
+
+  return [...arr].sort(compareFunction);
 }
