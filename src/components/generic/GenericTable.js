@@ -76,7 +76,7 @@ const GenericTable = ({
             size={50}
             className=' text-info'
             onClick={() => {
-              console.log('ipd');
+              updateSearchBy('');
               updateSearchVisibility(!searchVisible);
             }}
           />

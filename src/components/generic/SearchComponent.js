@@ -33,6 +33,11 @@ const SearchComponent = () => {
   useEffect(() => {
     setSearchText('');
   }, [initialSearchArray]);
+  useEffect(() => {
+    setSearchText('');
+    updateResultSearchArray(initialSearchArray);
+    // eslint-disable-next-line
+  }, [searchVisible]);
 
   return (
     <>
