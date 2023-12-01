@@ -20,33 +20,47 @@ export function formatDate(date) {
   return [year, month, day].join('-');
 }
 
-export function sortArrayByObjectKey(arr, key, order = 'asc') {
+export function sortArrayByObjectKey(arr, key, order) {
+  console.log(order);
   if (!arr || !Array.isArray(arr) || arr.length === 0 || !key) {
     return [];
   }
 
-  // Helper function to handle sorting order
-  const compare = (a, b) => {
-    if (a < b) return order === 'asc' ? -1 : 1;
-    if (a > b) return order === 'asc' ? 1 : -1;
+  // Define the compare function for ascending order
+  const compareAsc = (a, b) => {
+    if (a < b) return -1;
+    if (a > b) return 1;
     return 0;
   };
 
-  return arr.sort((a, b) => {
+  // Define the compare function for descending order
+  const compareDesc = (a, b) => {
+    if (a < b) return 1;
+    if (a > b) return -1;
+    return 0;
+  };
+
+  // Choose the appropriate comparison function based on order
+  const compareFunction = order === 'asc' ? compareAsc : compareDesc;
+
+  return [...arr].sort((a, b) => {
     let valA = a[key];
     let valB = b[key];
 
     // Check if the values are numbers
     if (typeof valA === 'number' && typeof valB === 'number') {
-      return compare(valA, valB);
+      return compareFunction(valA, valB);
     }
 
     // Check if the values can be parsed as dates
     if (!isNaN(Date.parse(valA)) && !isNaN(Date.parse(valB))) {
-      return compare(new Date(valA), new Date(valB));
+      return compareFunction(new Date(valA), new Date(valB));
     }
 
     // Otherwise, convert values to strings and compare
-    return compare(String(valA), String(valB));
+    return compareFunction(
+      String(valA).toLowerCase(),
+      String(valB).toLowerCase()
+    );
   });
 }

@@ -10,6 +10,7 @@ import { TbListSearch } from 'react-icons/tb';
 import { LiaSortSolid } from 'react-icons/lia';
 
 import TooltipGen from './TooltipGen';
+import { sortArrayByObjectKey } from '../../genericFunctions/functions';
 
 const GenericTable = ({
   dataPassed,
@@ -18,6 +19,8 @@ const GenericTable = ({
   excludeFields = [],
 }) => {
   const [sortedArray, setSortedArray] = useState([]);
+  const [sortingOrder, setSortingOrder] = useState('asc');
+
   const navigate = useNavigate();
 
   // Function to format date if it's in ISO format
@@ -59,16 +62,24 @@ const GenericTable = ({
 
   // Infer fields from the first item in the data array and exclude specified fields
 
+  //sorting
+  useEffect(() => {
+    setSortedArray(resultSearchArray);
+  }, [resultSearchArray]);
+
+  const sortingHandler = (key) => {
+    let order = sortingOrder === 'asc' ? 'desc' : 'asc';
+    var newArray = sortArrayByObjectKey(sortedArray, key, order);
+    setSortedArray(newArray);
+    setSortingOrder(order);
+  };
+
   const fields =
     resultSearchArray.length > 0
       ? Object.keys(resultSearchArray[0]).filter(
           (key) => !excludeFields.includes(key)
         )
       : [];
-
-  const sortingHandler = (key) => {
-    var currentArray = resultSearchArray;
-  };
 
   return (
     <>
@@ -105,13 +116,16 @@ const GenericTable = ({
           </tr>
           <tr>
             {fields.map((field, index) => (
-              <td key={index} className=' text-center table_key'>
+              <td
+                onClick={() => {
+                  sortingHandler(field);
+                }}
+                key={index}
+                className=' text-center table_key'
+              >
                 <TooltipGen
                   title={<LiaSortSolid size={20} className=' text-info' />}
                   text={`Sort by ${convertToLabel(field)}`}
-                  onClick={() => {
-                    sortingHandler(field);
-                  }}
                 />
               </td>
             ))}
@@ -124,7 +138,7 @@ const GenericTable = ({
           </tr>
         </thead>
         <tbody>
-          {resultSearchArray.map((item, index) => (
+          {sortedArray.map((item, index) => (
             <tr key={index}>
               {fields.map((field, idx) => (
                 <td
