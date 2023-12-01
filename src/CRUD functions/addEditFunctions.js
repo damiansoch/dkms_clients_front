@@ -11,8 +11,6 @@ import {
 } from './classes/allClasses';
 
 export const addEditObject = async (receivedData, action) => {
-  console.log(receivedData);
-  console.log(action);
   let endpoint = '';
 
   var response = {};
@@ -95,6 +93,11 @@ export const addEditObject = async (receivedData, action) => {
   if (action === 'deletejobs') {
     endpoint = `https://localhost:7280/api/Job/delete/${receivedData}`;
     response = await deleteAxiosFunction(endpoint);
+  }
+
+  if (action === 'updateJobCompleted') {
+    endpoint = `https://localhost:7280/api/Job/update/${receivedData.jobId}/${receivedData.isCompleted}`;
+    response = await updateAxiosFunction(endpoint);
   }
   return response;
 };

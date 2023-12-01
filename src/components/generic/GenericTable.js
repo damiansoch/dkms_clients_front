@@ -10,7 +10,13 @@ import { TbListSearch } from 'react-icons/tb';
 import { LiaSortSolid } from 'react-icons/lia';
 
 import TooltipGen from './TooltipGen';
-import { sortArrayByObjectKey } from '../../genericFunctions/functions';
+import {
+  isResponseSuccess,
+  sortArrayByObjectKey,
+} from '../../genericFunctions/functions';
+import GenericCheckbox from './GenericCheckbox';
+import { addEditObject } from '../../CRUD functions/addEditFunctions';
+import ErrorComponent from './ErrorComponent';
 
 const GenericTable = ({
   dataPassed,
@@ -20,6 +26,8 @@ const GenericTable = ({
 }) => {
   const [sortedArray, setSortedArray] = useState([]);
   const [sortingOrder, setSortingOrder] = useState('asc');
+  const [message0, setMessage0] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -74,6 +82,28 @@ const GenericTable = ({
     setSortingOrder(order);
   };
 
+  //update job completed
+  const updateJobCompleted = async (jobId, isCompleted) => {
+    setIsError(false);
+    setMessage0([]);
+    const updateJobRequestObj = {
+      jobId,
+      isCompleted,
+    };
+    const response = await addEditObject(
+      updateJobRequestObj,
+      'updateJobCompleted'
+    );
+    var isSuccess = isResponseSuccess(response);
+    if (isSuccess) {
+      setMessage0(response.data);
+    } else {
+      console.log(response.data);
+      setMessage0(response.data);
+      setIsError(true);
+    }
+  };
+
   const fields =
     resultSearchArray.length > 0
       ? Object.keys(resultSearchArray[0]).filter(
@@ -95,6 +125,13 @@ const GenericTable = ({
           />
         </div>
       </Row>
+      {message0.length > 0 && (
+        <ErrorComponent
+          data={message0}
+          variant={isError ? 'danger' : 'success'}
+        />
+      )}
+
       <Table striped bordered hover className='mt-3'>
         <thead>
           <tr>
@@ -140,17 +177,25 @@ const GenericTable = ({
         <tbody>
           {sortedArray.map((item, index) => (
             <tr key={index}>
-              {fields.map((field, idx) => (
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    handleJobSelect(item);
-                  }}
-                  key={idx}
-                >
-                  {formatDate(item[field])}
-                </td>
-              ))}
+              {fields.map((field, idx) =>
+                field === 'completed' ? (
+                  <GenericCheckbox
+                    data={item[field]}
+                    itemId={item.id}
+                    updateFunction={updateJobCompleted}
+                  />
+                ) : (
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      handleJobSelect(item);
+                    }}
+                    key={idx}
+                  >
+                    {formatDate(item[field])}
+                  </td>
+                )
+              )}
               {dataPassed === 'customers' && (
                 <td>
                   <Row className='text-center'>
