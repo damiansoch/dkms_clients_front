@@ -21,7 +21,6 @@ export function formatDate(date) {
 }
 
 export function sortArrayByObjectKey(arr, key, order) {
-  console.log(order);
   if (!arr || !Array.isArray(arr) || arr.length === 0 || !key) {
     return [];
   }
@@ -47,20 +46,17 @@ export function sortArrayByObjectKey(arr, key, order) {
     let valA = a[key];
     let valB = b[key];
 
-    // Check if the values are numbers
-    if (typeof valA === 'number' && typeof valB === 'number') {
-      return compareFunction(valA, valB);
+    // Treat as a number if it's strictly a number
+    if (
+      !isNaN(valA) &&
+      !isNaN(parseFloat(valA)) &&
+      !isNaN(valB) &&
+      !isNaN(parseFloat(valB))
+    ) {
+      return compareFunction(Number(valA), Number(valB));
     }
 
-    // Check if the values can be parsed as dates
-    if (!isNaN(Date.parse(valA)) && !isNaN(Date.parse(valB))) {
-      return compareFunction(new Date(valA), new Date(valB));
-    }
-
-    // Otherwise, convert values to strings and compare
-    return compareFunction(
-      String(valA).toLowerCase(),
-      String(valB).toLowerCase()
-    );
+    // Otherwise, treat as a string
+    return compareFunction(String(valA), String(valB));
   });
 }
