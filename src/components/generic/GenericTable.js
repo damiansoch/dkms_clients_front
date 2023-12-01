@@ -4,7 +4,7 @@ import { TiUserDeleteOutline } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
 import { format, parseISO } from 'date-fns';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import AppContext from '../../Context/context';
 import { TbListSearch } from 'react-icons/tb';
 import { LiaSortSolid } from 'react-icons/lia';
@@ -17,6 +17,7 @@ const GenericTable = ({
   customerDeleteHandler = undefined,
   excludeFields = [],
 }) => {
+  const [sortedArray, setSortedArray] = useState([]);
   const navigate = useNavigate();
 
   // Function to format date if it's in ISO format
@@ -65,6 +66,10 @@ const GenericTable = ({
         )
       : [];
 
+  const sortingHandler = (key) => {
+    var currentArray = resultSearchArray;
+  };
+
   return (
     <>
       <Row>
@@ -104,6 +109,9 @@ const GenericTable = ({
                 <TooltipGen
                   title={<LiaSortSolid size={20} className=' text-info' />}
                   text={`Sort by ${convertToLabel(field)}`}
+                  onClick={() => {
+                    sortingHandler(field);
+                  }}
                 />
               </td>
             ))}
