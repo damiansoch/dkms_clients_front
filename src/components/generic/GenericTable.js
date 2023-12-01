@@ -4,8 +4,9 @@ import { TiUserDeleteOutline } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
 import { convertToLabel } from '../../genericFunctions/converters';
 import { format, parseISO } from 'date-fns';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import AppContext from '../../Context/context';
+import { TbListSearch } from 'react-icons/tb';
 
 const GenericTable = ({
   dataPassed,
@@ -30,18 +31,19 @@ const GenericTable = ({
 
   //setup search component
   const {
+    searchVisible,
     updateSearchBy,
     updateSearchVisibility,
     updateInitialSearchArray,
     resultSearchArray,
   } = useContext(AppContext);
 
-  useEffect(() => {
-    updateSearchVisibility(true);
-    return () => {
-      updateSearchVisibility(false);
-    };
-  }, [updateSearchVisibility]);
+  //
+  //   //updateSearchVisibility(false);
+  //   return () => {
+  //     updateSearchVisibility(false);
+  //   };
+  // }, [updateSearchVisibility]);
   useEffect(() => {
     updateInitialSearchArray(data);
 
@@ -67,65 +69,81 @@ const GenericTable = ({
       : [];
 
   return (
-    <Table striped bordered hover className='mt-3'>
-      <thead>
-        <tr>
-          {fields.map((field, index) => (
-            <th
-              onClick={() => {
-                updateSearchBy(field);
-              }}
-              key={index}
-              className='table_header'
-            >
-              {convertToLabel(field)}
-            </th>
-          ))}
-          {dataPassed === 'customers' && (
-            <th className='table_header'>Actions</th>
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        {resultSearchArray.map((item, index) => (
-          <tr key={index}>
-            {fields.map((field, idx) => (
-              <td
-                style={{ cursor: 'pointer' }}
+    <>
+      <Row>
+        <div className=' col-2'>
+          <TbListSearch
+            size={50}
+            className=' text-info'
+            onClick={() => {
+              console.log('ipd');
+              updateSearchVisibility(!searchVisible);
+            }}
+          />
+        </div>
+      </Row>
+      <Table striped bordered hover className='mt-3'>
+        <thead>
+          <tr>
+            {fields.map((field, index) => (
+              <th
                 onClick={() => {
-                  handleJobSelect(item);
+                  updateSearchBy(field);
                 }}
-                key={idx}
+                key={index}
+                className='table_header'
               >
-                {formatDate(item[field])}
-              </td>
+                {convertToLabel(field)}
+              </th>
             ))}
             {dataPassed === 'customers' && (
-              <td>
-                <Row className='text-center'>
-                  {/* Actions remain as they are */}
-                  <TbListDetails
-                    size={30}
-                    className='text-info icon col-4'
-                    onClick={() => navigate(`/details/${item.id}`)}
-                  />
-                  <TbEditCircle
-                    size={30}
-                    className='text-warning icon col-4'
-                    onClick={() => navigate(`/addEdit/editCustomer/${item.id}`)}
-                  />
-                  <TiUserDeleteOutline
-                    size={30}
-                    className='text-danger icon col-4'
-                    onClick={() => customerDeleteHandler(item)}
-                  />
-                </Row>
-              </td>
+              <th className='table_header'>Actions</th>
             )}
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {resultSearchArray.map((item, index) => (
+            <tr key={index}>
+              {fields.map((field, idx) => (
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    handleJobSelect(item);
+                  }}
+                  key={idx}
+                >
+                  {formatDate(item[field])}
+                </td>
+              ))}
+              {dataPassed === 'customers' && (
+                <td>
+                  <Row className='text-center'>
+                    {/* Actions remain as they are */}
+                    <TbListDetails
+                      size={30}
+                      className='text-info icon col-4'
+                      onClick={() => navigate(`/details/${item.id}`)}
+                    />
+                    <TbEditCircle
+                      size={30}
+                      className='text-warning icon col-4'
+                      onClick={() =>
+                        navigate(`/addEdit/editCustomer/${item.id}`)
+                      }
+                    />
+                    <TiUserDeleteOutline
+                      size={30}
+                      className='text-danger icon col-4'
+                      onClick={() => customerDeleteHandler(item)}
+                    />
+                  </Row>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
   );
 };
 
